@@ -44,5 +44,6 @@ namespace GymMangementDAL.Repositories.Classes
             return dbcontext.SaveChanges();
 
         }
+       
     }
 }
