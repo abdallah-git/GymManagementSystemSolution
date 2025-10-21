@@ -15,7 +15,7 @@ namespace GymMangementDAL.Entities
 
         public DateTime StartDate { get; set; }
 
-        public DateOnly EndDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         #region relationships 
         #region session - category 

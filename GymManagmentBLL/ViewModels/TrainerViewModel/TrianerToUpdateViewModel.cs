@@ -50,5 +50,10 @@ namespace GymManagmentBLL.ViewModels.TrainerViewModel
 
 
 
+
+
+
+
+
     }
 }

@@ -15,7 +15,8 @@ namespace GymMangementDAL.Entities
 
         public string BloodType { get; set; } = null!; 
 
-        public string Note { get; set; } 
+        public string Note { get; set; }
 
+       
     }
 }
