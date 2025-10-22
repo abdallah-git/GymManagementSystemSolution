@@ -16,7 +16,7 @@ namespace GymMangementDAL.Repositories.Classes
         private readonly GymDbcontext dbcontext1; 
         public GenaricRepository(GymDbcontext dbcontext )
         {
-            dbcontext = dbcontext1; 
+            dbcontext1 = dbcontext; 
         }
         public void Add(Tentity entity)
         {

@@ -1,32 +1,83 @@
-using System.Diagnostics;
-using GymManagementPL.Models;
+﻿using GymManagmentBLL.Services.Interfaces;
+using GymMangementDAL.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Numerics;
 
 namespace GymManagementPL.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IAnalyticservice analyticservice1; 
+        public HomeController(IAnalyticservice analyticservice )
         {
-            _logger = logger;
+            analyticservice1 = analyticservice; 
         }
 
-        public IActionResult Index()
+
+        public ActionResult Index()
         {
-            return View();
+            var data = analyticservice1.GetAnalyticsData(); 
+
+            return View(data);
+
+
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+
+
+
+
+
+        #region Action Return types 
+        //public ActionResult ViewResult ()
+        //{
+        //    return View(); 
+        //}
+
+        //public ActionResult Trainers()
+        //{
+
+        //    var Trainers = new List<Trainer>()
+        //    {
+        //        new Trainer () {Name = "Ahmed",Phone = "01129815414"} ,
+        //       new Trainer () {Name = "Aya" , Phone = "01129815414"}
+        //    };
+
+
+        //    return Json(Trainers); 
+        //}
+
+
+
+        //public ActionResult Content()
+        //{
+        //    return Content(" <h1>Hello gym mangement system </h1> , text/html"); 
+        //}
+
+
+
+        //public ActionResult EmptyResult ()
+        //{
+        //    return EmptyResult(); 
+        //}
+
+
+
+        //public ActionResult Redirect ()
+        //{
+        //    return Redirect("https://www.netflix.com/eg-en/"); 
+        //}
+
+
+        #endregion 
+
+
+
+
+
+
+
     }
 }
