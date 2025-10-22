@@ -1,6 +1,7 @@
 ﻿using GymMangementDAL.Data.Contexts;
 using GymMangementDAL.Entities;
 using GymMangementDAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,42 +10,39 @@ using System.Threading.Tasks;
 
 namespace GymMangementDAL.Repositories.Classes
 {
-    internal class SessionReposiotry : ISessionReposiotry
+    public class SessionReposiotry : GenaricRepository<Session>, ISessionRepository
     {
 
-        private readonly GymDbcontext dbcontext;
-
-        public SessionReposiotry(GymDbcontext gym )
+        private readonly GymDbcontext gymDbcontext;  
+        public SessionReposiotry(GymDbcontext dbcontext ) : base (dbcontext) 
         {
-            dbcontext = gym; 
-            
+            gymDbcontext = dbcontext; 
         }
-        public int Add(Session session)
+        public IEnumerable<Session> GetAllsesionswithtrainersandcategories()
         {
-            dbcontext.Sessions.Add(session);
-            return dbcontext.SaveChanges(); 
-        }
-
-        public int Delete(Session session)
-        {
-            dbcontext.Sessions.Remove(session);
-           return  dbcontext.SaveChanges();
+            return gymDbcontext.Sessions.Include(x => x.SessionTrainer)
+                                        .Include(x => x.sessioncategory)
+                                        .ToList(); 
         }
 
-        public IEnumerable<Session> GetAll()
+        public int GetCountofbookslots(int sessionid)
         {
-          return  dbcontext.Sessions.ToList(); 
+
+
+            return gymDbcontext.Membersessions.Count(x => x.SessionId == sessionid); 
+
+
+
+
         }
 
-        public Session? GetbyId(int id)
+        public Session? GetSessionByIDwithtrainersandcategories(int id)
         {
-            return dbcontext.Sessions.Find(id); 
-        }
+            return gymDbcontext.Sessions.Include(x => x.SessionTrainer)
+                                        .Include(x => x.sessioncategory)
+                                        .FirstOrDefault(x => x.Id == id); 
+                                       
 
-        public int Update(Session session)
-        {
-            dbcontext.Sessions.Update(session);
-            return dbcontext.SaveChanges(); 
         }
     }
 }
