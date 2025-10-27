@@ -9,7 +9,7 @@ namespace GymMangementDAL.Entities
     public class Membership : BaseEntity
     {
         // start date inhert from base i will changename by fluent api 
-       public DateTime EndDate { get; set; } 
+       public DateTime EndDate { get; set; }
 
 
 
@@ -17,15 +17,13 @@ namespace GymMangementDAL.Entities
         {
             get
             {
-                if (EndDate >= DateTime.Now)
-
-                    return "expired";
+                if (EndDate < DateTime.Now)
+                    return "Expired";
                 else
-                    return "active"; 
-                    
-                
+                    return "Active";
             }
         }
+
 
         public int MemberId { get; set; } 
         public Member Member { get; set; } = null!;

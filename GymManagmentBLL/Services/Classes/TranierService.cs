@@ -1,4 +1,5 @@
-﻿using GymManagmentBLL.Services.Interfaces;
+﻿using AutoMapper;
+using GymManagmentBLL.Services.Interfaces;
 using GymManagmentBLL.ViewModels.TrainerViewModel;
 using GymMangementDAL.Entities;
 using GymMangementDAL.Repositories.Interfaces;
@@ -10,14 +11,15 @@ using System.Threading.Tasks;
 
 namespace GymManagmentBLL.Services.Classes
 {
-    internal class TranierService : ITrainerService
+    public class TranierService : ITrainerService
     {
 
         private readonly IUnitOfWork _unitOfWork;
-
-        public TranierService(IUnitOfWork unitOfWork) 
+        private readonly IMapper mapper1; 
+        public TranierService(IUnitOfWork unitOfWork , IMapper mapper ) 
         {
-            _unitOfWork = unitOfWork; 
+            _unitOfWork = unitOfWork;
+            mapper1 = mapper; 
         }
 
         public bool CreateTrainer(CreateTrainerViewModel createTrainer)
@@ -29,21 +31,8 @@ namespace GymManagmentBLL.Services.Classes
 
                 if (IsEmailExists(createTrainer.Email) || IsPhoneExists(createTrainer.Phone)) return false;
 
-                var trainer = new Trainer()
-                {
-                    Name = createTrainer.Name,
-                    Email = createTrainer.Email,
-                    Phone = createTrainer.Phone,
-                    Gender = createTrainer.Gender,
-                    Address = new Address()
-                    {
-                        BuildingNumber = createTrainer.BuildingNumber,
-                        Street = createTrainer.Street,
-                        City = createTrainer.City,
-                    },
-                    Specialties = createTrainer.Specialties,
-                };
-
+                var trainer = mapper1.Map<CreateTrainerViewModel, Trainer>(createTrainer); 
+               
                 _unitOfWork.GetRepository<Trainer>().Add(trainer);
 
                 return _unitOfWork.Savechanges() > 0;
@@ -63,15 +52,7 @@ namespace GymManagmentBLL.Services.Classes
 
             if (Trainers is null || !Trainers.Any()) return [];
 
-            return Trainers.Select(T => new TrainerViewModel()
-            {
-                Id = T.Id,
-                Name = T.Name,
-                Email = T.Email,
-                Phone = T.Phone,
-                Specialties = T.Specialties.ToString(),
-
-            });
+            return mapper1.Map<IEnumerable<TrainerViewModel>>(Trainers); 
 
         }
 
@@ -85,13 +66,22 @@ namespace GymManagmentBLL.Services.Classes
 
             return new TrainerViewModel()
             {
-                Name = trainer.Name,
-                Email = trainer.Email,
-                Phone = trainer.Phone,
-                DateOfBirth = trainer.DateOfBirth.ToShortDateString(),
-                Address = $"{trainer.Address.BuildingNumber} - {trainer.Address.Street} - {trainer.Address.City}"
-            };
+                Name= trainer.Name , 
 
+                Address = $"{trainer.Address.BuildingNumber} - {trainer.Address.City} - {trainer.Address.Street}" , 
+
+                Email = trainer.Email , 
+
+                Phone = trainer.Phone , 
+
+                Specialties = trainer .Specialties.ToString() , 
+
+                DateOfBirth = trainer.DateOfBirth.ToShortDateString () , 
+            };  
+
+            
+            
+      
         }
 
         public TrianerToUpdateViewModel? GetTrainerToUpdate(int id)
@@ -100,16 +90,8 @@ namespace GymManagmentBLL.Services.Classes
 
             if (trainer is null) return null;
 
-            return new TrianerToUpdateViewModel()
-            {
-                Name = trainer.Name,
-                Email = trainer.Email,
-                Phone = trainer.Phone,
-                BuildingNumber = trainer.Address.BuildingNumber,
-                Street = trainer.Address.Street,
-                City = trainer.Address.City,
-                Specialties = trainer.Specialties,
-            };
+            return mapper1.Map<Trainer, TrianerToUpdateViewModel>(trainer); 
+           
         }
 
         public bool RemoveTrainer(int id)
@@ -145,16 +127,13 @@ namespace GymManagmentBLL.Services.Classes
                 var TrainerRepo = _unitOfWork.GetRepository<Trainer>();
                 var trainer = TrainerRepo.GetById(id);
 
-                if (trainer is null || IsEmailExists(updateTrianer.Email) || IsPhoneExists(updateTrianer.Phone)) return false;
+                var Emailexist = _unitOfWork.GetRepository<Trainer>().GetAll(x => x.Email == updateTrianer.Email && x.Id != id).Any();
+                var phoneexist = _unitOfWork.GetRepository<Trainer>().GetAll(x => x.Phone == updateTrianer.Phone && x.Id != id).Any();
+
+                if (trainer is null || Emailexist || phoneexist) return false;
 
 
-                trainer.Email = updateTrianer.Email;
-                trainer.Phone = updateTrianer.Phone;
-                trainer.Address.BuildingNumber = updateTrianer.BuildingNumber;
-                trainer.Address.Street = updateTrianer.Street;
-                trainer.Address.City = updateTrianer.City;
-                trainer.Specialties = updateTrianer.Specialties;
-                trainer.UpdatedAt = DateTime.Now;
+                mapper1.Map(trainer, updateTrianer); 
 
                 TrainerRepo.Update(trainer);
 

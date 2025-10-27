@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GymManagmentBLL.ViewModels.SesssionViewModel
 {
-    internal class UpdateSessionViewModel
+    public class UpdateSessionViewModel
     {
 
 

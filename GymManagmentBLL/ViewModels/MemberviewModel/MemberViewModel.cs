@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GymManagmentBLL.ViewModels.MemberViewModel
 {
-    internal class MemberViewModel
+    public class MemberViewModel
     {
 
 
