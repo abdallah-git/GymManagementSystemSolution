@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GymManagmentBLL.Services.Interfaces
 {
-    internal interface ITrainerService
+    public interface ITrainerService
     {
 
         bool CreateTrainer(CreateTrainerViewModel createTrainer);

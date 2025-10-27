@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace GymManagmentBLL.Services.Classes
 {
-    internal class SessionService : ISessionService
+    public class SessionService : ISessionService
     {
 
         private readonly IUnitOfWork unitOfWork1;
@@ -187,6 +187,25 @@ namespace GymManagmentBLL.Services.Classes
 
 
 
+        public IEnumerable<TrainerSelectviewModel> GetTrainersfordropdown()
+        {
+            var trainers = unitOfWork1.GetRepository<Trainer>().GetAll();
+
+
+            return mapper1.Map<IEnumerable<Trainer>, IEnumerable<TrainerSelectviewModel>>(trainers); 
+        }
+
+        public IEnumerable<Categoeryselectviewmodel> GetCategoeriesfordropdown()
+        {
+            var categories = unitOfWork1.GetRepository<Category>().GetAll();
+
+
+            return mapper1.Map<IEnumerable<Category>, IEnumerable<Categoeryselectviewmodel>>(categories);
+        }
+
+
+
+
 
 
 
@@ -239,7 +258,7 @@ namespace GymManagmentBLL.Services.Classes
             return true;
         }
 
-
+     
 
 
 

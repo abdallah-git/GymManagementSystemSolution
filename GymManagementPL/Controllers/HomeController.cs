@@ -30,6 +30,7 @@ namespace GymManagementPL.Controllers
 
 
 
+
         #region Action Return types 
         //public ActionResult ViewResult ()
         //{

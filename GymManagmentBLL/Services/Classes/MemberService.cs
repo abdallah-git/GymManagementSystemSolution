@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace GymManagmentBLL.Services.Classes
 {
-    internal class MemberService : IMemberService
+    public class MemberService : IMemberService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper mapper1; 
@@ -39,19 +39,18 @@ namespace GymManagmentBLL.Services.Classes
 
                 // CreateMemberViewModel - Member maaping
 
-                if (IsEmailExist(createMember.Email) || IsPhoneExist(createMember.Phone))
-                    return false;
+               
 
-                var member = mapper1.Map<Member>(createMember);
+                var member = mapper1.Map<CreateMemberViewModel,Member>(createMember);
 
                 _unitOfWork.GetRepository<Member>().Add(member);
                 return _unitOfWork.Savechanges() > 0;
 
             }
 
-            catch
+            catch 
             {
-                return false;
+                return false; 
 
             }
 
@@ -96,17 +95,8 @@ namespace GymManagmentBLL.Services.Classes
             if (member == null) return null;
 
             // member - memberviewmodel
-            var viewmodel = new MemberViewModel
-            {
-                Name = member.Name,
-                Email = member.Email,
-                Photo = member.photo,
-                Phone = member.Phone,
-                Gender = member.Gender.ToString(),
-                DateOfBirth = member.DateOfBirth.ToShortDateString(),
-                Address = $"{member.Address.BuildingNumber} - {member.Address.Street} - {member.Address.City}",
-
-            };
+            var viewmodel = mapper1.Map<Member, MemberViewModel>(member); 
+            
             var Activemembership = _unitOfWork.GetRepository<Membership>()
                                 .GetAll(X => X.MemberId == memberId).FirstOrDefault();
 
@@ -115,7 +105,7 @@ namespace GymManagmentBLL.Services.Classes
             {
                 viewmodel.MemberShipStartDate = Activemembership.CreatedAt.ToShortDateString();
                 viewmodel.MemberShipEndDate = Activemembership.EndDate.ToShortDateString();
-                var plan = _unitOfWork.GetRepository<Plan>().GetById(memberId); 
+                var plan = _unitOfWork.GetRepository<Plan>().GetById(Activemembership.PlanId);
                 viewmodel.PlanName = plan?.Name;
             }
             return viewmodel;
@@ -153,7 +143,15 @@ namespace GymManagmentBLL.Services.Classes
         {
             try
             {
-                if (IsEmailExist(memberToUpdate.Email) || IsPhoneExist(memberToUpdate.Phone)) return false;
+              var Emailexist  =   _unitOfWork.GetRepository<Member>()
+                    .GetAll(x => x.Email == memberToUpdate.Email && x.Id != Id).Any();
+
+
+                var Phonexist = _unitOfWork.GetRepository<Member>()
+                    .GetAll(x => x.Email == memberToUpdate.Phone && x.Id != Id).Any();
+
+
+                if (Emailexist || Phonexist) return false; 
 
                 var MemberRepo = _unitOfWork.GetRepository<Member>(); 
                 var member = MemberRepo.GetById(Id);
@@ -178,7 +176,6 @@ namespace GymManagmentBLL.Services.Classes
 
 
 
-
         public bool RemoveMember(int id)
         {
             try
@@ -187,7 +184,11 @@ namespace GymManagmentBLL.Services.Classes
                 var member = memberrepo.GetById(id);
                 if (member == null) return false;
 
-                var HasActiveMmeberSessions = _unitOfWork.GetRepository<Membersession>().GetAll(X => X.MemberId == id && X.Session.StartDate > DateTime.Now).Any(); 
+                var SessionsID = _unitOfWork.GetRepository<Membersession>()
+                    .GetAll(X => X.MemberId == id).Select(x => x.SessionId);
+
+                var HasActiveMmeberSessions = _unitOfWork.GetRepository<Session>()
+                    .GetAll(x => SessionsID.Contains(x.Id) && x.StartDate > DateTime.Now).Any();
 
                 if (HasActiveMmeberSessions) return false;
 
