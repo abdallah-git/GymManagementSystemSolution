@@ -1,9 +1,11 @@
 ﻿using GymManagmentBLL.Services.Interfaces;
 using GymManagmentBLL.ViewModels.PlanViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymManagementPL.Controllers
 {
+    [Authorize]
     public class PlanController : Controller
     {
 

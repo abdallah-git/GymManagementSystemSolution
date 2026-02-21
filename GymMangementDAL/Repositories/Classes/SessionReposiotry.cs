@@ -32,8 +32,6 @@ namespace GymMangementDAL.Repositories.Classes
             return gymDbcontext.Membersessions.Count(x => x.SessionId == sessionid); 
 
 
-
-
         }
 
         public Session? GetSessionByIDwithtrainersandcategories(int id)

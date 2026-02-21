@@ -15,6 +15,9 @@ namespace GymMangementDAL.Repositories.Interfaces
 
         public ISessionRepository sessionRepository { get; } 
 
+        public IMembershipRepository MembershipRepository { get; }
+
+        public IBookingRepository BookingRepository { get; }
         int Savechanges(); 
 
 

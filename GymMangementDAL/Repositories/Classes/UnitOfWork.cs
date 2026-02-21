@@ -10,37 +10,38 @@ using System.Threading.Tasks;
 namespace GymMangementDAL.Repositories.Classes
 {
     public class UnitOfWork : IUnitOfWork
+
     {
+        private readonly Dictionary<Type, object> _repositories = new();
         private readonly GymDbcontext _dbcontext;
         
 
-        public UnitOfWork(GymDbcontext dbcontext , ISessionRepository repository  )
+        public UnitOfWork(GymDbcontext dbcontext , ISessionRepository repository , IMembershipRepository membershipRepository , IBookingRepository bookingRepository  )
         {
             _dbcontext = dbcontext;
-            sessionRepository = repository; 
+            sessionRepository = repository;
+            MembershipRepository = membershipRepository;
+            BookingRepository = bookingRepository;
+           
             
         }
 
         public ISessionRepository sessionRepository { get; }
+        public IMembershipRepository MembershipRepository { get; }
 
-
-
-
-
-
-        private readonly Dictionary<Type, object> _repository = new () ;
+        public IBookingRepository BookingRepository { get; }
 
 
         public IGenareicReposiotry<Tentity> GetRepository<Tentity>() where Tentity : BaseEntity, new()
         {
             var Entitytype = typeof(Tentity); 
 
-            if (_repository.ContainsKey(Entitytype)) 
-                return (IGenareicReposiotry<Tentity>) _repository[Entitytype];
+            if (_repositories.ContainsKey(Entitytype)) 
+                return (IGenareicReposiotry<Tentity>) _repositories[Entitytype];
 
 
             var NewRepo = new GenaricRepository<Tentity>(_dbcontext);
-            _repository[Entitytype] = NewRepo;
+            _repositories[Entitytype] = NewRepo;
             return NewRepo; 
 
 

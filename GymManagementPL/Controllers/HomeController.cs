@@ -1,10 +1,12 @@
 ﻿using GymManagmentBLL.Services.Interfaces;
 using GymMangementDAL.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Numerics;
 
 namespace GymManagementPL.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
 

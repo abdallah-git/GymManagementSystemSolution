@@ -12,7 +12,7 @@ namespace GymMangementDAL.Entities
 
         public int Id { get; set; }
 
-        public DateOnly CreatedAt { get; set; } 
+        public DateTime CreatedAt { get; set; } 
 
 
         public DateTime UpdatedAt { get; set; } 

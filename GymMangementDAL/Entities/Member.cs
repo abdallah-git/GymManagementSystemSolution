@@ -11,7 +11,7 @@ namespace GymMangementDAL.Entities
 
         // joindate == createdat of baseentity 
 
-        public string? photo { get; set; }
+        public string photo { get; set; } = null!; 
 
         #region Relationships 
 
